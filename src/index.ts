@@ -1,26 +1,15 @@
-import { AppDataSource } from './data-source';
-import type { Request, Response, NextFunction } from 'express';
-import express from 'express';
-import cors from 'cors';
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import { ConfigService } from '@nestjs/config';
+import { configDotenv } from 'dotenv';
 
-import { verifyFirebaseToken } from './controller/verifyFirebaseToken';
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  console.log(app);
+  const configService = app.get(ConfigService);
+  const port = configService.get('BACKEND_PORT') || 8080; // 환경변수나 .env 파일에서 포트를 가져옵니다.
 
-AppDataSource.initialize()
-  .then(() => console.log('🚀 데이터베이스 연결 성공'))
-  .catch((error) => console.log(error));
-
-const app = express();
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-
-app.use(verifyFirebaseToken);
-
-app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
-  console.log('backend error:', error);
-  return res.status(500).send(error);
-});
-
-app.listen(process.env.BACKEND_PORT, () => {
-  console.log(`🚀 서버가 ${process.env.BACKEND_PORT}번 포트에서 실행중입니다.`);
-});
+  await app.listen(port);
+  console.log(`🚀 서버가 ${port}번 포트에서 실행중입니다.`);
+}
+bootstrap();
