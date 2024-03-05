@@ -11,4 +11,6 @@ export class StudentDTO {
   create_at!: Date;
   is_login?: string; // 생각
   type!: string; // 생각
+  file_name!: string;
+  file_url!: string;
 }

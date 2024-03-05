@@ -10,7 +10,7 @@ import { Storage } from '@google-cloud/storage';
 const projectId: string = 'gs-teaching';
 const keyFilename: string = __dirname + '/mykey.json';
 const bucketName: string = 'gs_teaching_storage';
-module.exports.avatarStorage = () => {
+export const coverStorage = () => {
   const storage = new Storage({
     projectId,
     keyFilename,

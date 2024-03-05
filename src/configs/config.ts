@@ -2,7 +2,7 @@ const { initializeApp } = require('firebase/app');
 const { getAuth } = require('firebase/auth');
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyDate5WYyArX9PPX4raanA35rhq8GnnNTk',
+  apiKey: 'AIzaSyCjgE2OV7533SN_BcvvWbE5neSIF_PJIiU',
   authDomain: process.env.AUTH_DOMAIN,
   projectId: process.env.PROJECT_ID,
   storageBucket: process.env.STORAGE_BUCKET,

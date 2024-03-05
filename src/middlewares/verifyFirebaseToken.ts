@@ -4,6 +4,10 @@ import { RequestType, ResponseType, NextType } from 'src/types/params';
 export const verifyFirebaseToken = async (req: RequestType, res: ResponseType, next: NextType) => {
   const accessToken = req.headers.authorization && req.headers.authorization.split(' ')[1];
 
+  if (req.url.startsWith('/students') || req.url.startsWith('/auth')) {
+    return next();
+  }
+
   if (!accessToken) {
     return res.status(401).json({ message: 'Access Token 없음' });
   }

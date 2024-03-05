@@ -1,11 +1,13 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
-import { configDotenv } from 'dotenv';
+import { verifyFirebaseToken } from './middlewares/verifyFirebaseToken';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  console.log(app);
+
+  // app.use(verifyFirebaseToken);
+
   const configService = app.get(ConfigService);
   const port = configService.get('BACKEND_PORT') || 8080; // 환경변수나 .env 파일에서 포트를 가져옵니다.
 

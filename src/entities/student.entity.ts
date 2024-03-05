@@ -1,10 +1,11 @@
-import { Column, CreateDateColumn, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, OneToOne, PrimaryColumn } from 'typeorm';
 import { StudentCover } from './coverImg.entity';
 import { UserRole } from './enum/userRole';
 
 @Entity({ name: 'student' })
 export class Student {
-  @PrimaryGeneratedColumn('uuid')
+  // firebaseKey
+  @PrimaryColumn()
   id!: string;
 
   @Column()
@@ -44,6 +45,6 @@ export class Student {
   })
   type!: UserRole;
 
-  // @OneToOne(() => StudentCover, (imgcover) => imgcover.student)
-  // img_id?: StudentCover;
+  @OneToOne(() => StudentCover, (imgcover) => imgcover.student)
+  img_id?: StudentCover;
 }

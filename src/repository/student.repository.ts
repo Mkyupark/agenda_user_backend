@@ -14,4 +14,15 @@ export class StudentRepository {
   async createStudent(studentDTO: StudentDTO) {
     return await this.repository.save(studentDTO);
   }
+  async findStudentById(id: string) {
+    return await this.repository.findOne({
+      where: {
+        id: id,
+      },
+      relations: ['img_id'],
+    });
+  }
+  async deleteStudentById(id: string) {
+    return await this.repository.delete(id);
+  }
 }
