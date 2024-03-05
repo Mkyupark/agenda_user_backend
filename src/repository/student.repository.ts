@@ -11,7 +11,7 @@ export class StudentRepository {
     private readonly repository: Repository<StudentDTO> // Repository<Student> 타입으로 주입합니다.
   ) {}
 
-  async createStudent(studentDTO: StudentDTO) {
+  async createOrUpdateStudent(studentDTO: StudentDTO) {
     return await this.repository.save(studentDTO);
   }
   async findStudentById(id: string) {
@@ -19,7 +19,7 @@ export class StudentRepository {
       where: {
         id: id,
       },
-      relations: ['img_id'],
+      relations: ['studentCover'],
     });
   }
   async deleteStudentById(id: string) {

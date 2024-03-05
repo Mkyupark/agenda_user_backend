@@ -1,9 +1,21 @@
 import { Student } from '../../entities/student.entity';
 import { StudentDTO } from '../../dto/student.dto';
 
-import { Body, Controller, Delete, HttpStatus, Post, Put, Req, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpStatus,
+  Param,
+  Post,
+  Put,
+  Req,
+  Res,
+} from '@nestjs/common';
 import { StudentRepository } from '../../repository/student.repository';
 import { auth } from '../../configs/config';
+import { Response } from 'express';
 const {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -22,62 +34,67 @@ export class studentController {
   constructor(private studentRepository: StudentRepository) {}
   // 비밀번호 찾기랑 초기화 로그인 로그아웃 회원가
   @Post() //ok
-  async createStudent(@Body() studentDTO: StudentDTO) {
+  async createStudent(@Body() studentDTO: StudentDTO, @Res() res: Response) {
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        studentDTO.email,
-        studentDTO.password
-      );
-      // fb 키 저장
-      studentDTO.id = userCredential.user.uid;
-      await this.studentRepository.createStudent(studentDTO);
-      console.log(userCredential.user);
-      return userCredential.user;
+      const createdStudent = await this.studentRepository.createOrUpdateStudent(studentDTO);
+      return res.status(HttpStatus.CREATED).json(createdStudent);
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error });
+    }
+  }
+  @Put()
+  async updateStudent(@Body() studentDTO: StudentDTO) {
+    try {
     } catch (error) {
       return error;
     }
   }
-  @Post('login') //ok
-  async Login(@Body() studentDTO: StudentDTO) {
+  @Delete(':id')
+  async DeleteStudent(@Param('id') id: string, @Res() res: Response) {
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        studentDTO.email,
-        studentDTO.password
-      );
-      const temp = await this.studentRepository.findStudentById(userCredential.user.uid);
-      console.log(temp);
-      return userCredential.user;
+      const student = await this.studentRepository.deleteStudentById(id);
+      return res.status(HttpStatus.OK).json(student);
     } catch (error) {
-      return error;
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error });
     }
   }
-  @Post('logout')
-  async LogOut() {
+  @Get()
+  async findOneStudent(@Param('id') id: string, @Res() res: Response) {
     try {
-      const userCredential = await auth.currentUser;
-      if (userCredential == null) {
-        return '로그인 상태가 아님';
+      const student = await this.studentRepository.findStudentById(id);
+      if (!student) {
+        return res.status(HttpStatus.NOT_FOUND).json({ message: 'Student Not Found' });
       }
-      await signOut(auth);
-      return '로그아웃 완료';
+      console.log(student);
+      return res.status(HttpStatus.OK).json(student);
     } catch (error) {
-      return error;
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error });
     }
   }
-  @Delete()
-  async DeleteStudent() {
+
+  @Get('login') //ok
+  async Login(@Param('id') id: string, @Res() res: Response) {
     try {
-      const user = auth.currentUser;
-      if (!user) {
-        return '로그인 상태 아님';
+      const student = await this.studentRepository.findStudentById(id);
+      if (!student) {
+        return res.status(HttpStatus.NOT_FOUND).json({ message: 'Student Not Found' });
       }
-      await deleteUser(user);
-      await this.studentRepository.deleteStudentById(user.uid);
-      return '회원 탈퇴 완료';
+      return res.status(HttpStatus.OK).json(student);
     } catch (error) {
-      return error;
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error });
     }
   }
+  // @Post('logout')
+  // async LogOut() {
+  //   try {
+  //     const userCredential = await auth.currentUser;
+  //     if (userCredential == null) {
+  //       return '로그인 상태가 아님';
+  //     }
+  //     await signOut(auth);
+  //     return '로그아웃 완료';
+  //   } catch (error) {
+  //     return error;
+  //   }
+  // }
 }

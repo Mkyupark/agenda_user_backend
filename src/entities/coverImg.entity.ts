@@ -4,7 +4,7 @@ import { Student } from './student.entity';
 
 @Entity({ name: 'student_cover' })
 export class StudentCover extends ImgCover {
-  @OneToOne(() => Student)
+  @OneToOne(() => Student, (student) => student.studentCover)
   @JoinColumn({
     name: 'student_id',
   })

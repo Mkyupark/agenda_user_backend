@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { StudentCoverDTO } from '../dto/student.cover.dto';
 import { StudentCover } from '../entities/coverImg.entity';
 import { Repository } from 'typeorm';
+import { StudentDTO } from '../dto/student.dto';
 
 @Injectable()
 export class StudentCoverRepository {
@@ -16,5 +17,13 @@ export class StudentCoverRepository {
   }
   async deleteStudentCover(fileName: string) {
     return await this.repository.delete({ file_name: fileName });
+  }
+  async findbyCoverName(fileName: string) {
+    return await this.repository.findOne({
+      where: {
+        file_name: fileName,
+      },
+      relations: ['student'],
+    });
   }
 }

@@ -45,6 +45,6 @@ export class Student {
   })
   type!: UserRole;
 
-  @OneToOne(() => StudentCover, (imgcover) => imgcover.student)
-  img_id?: StudentCover;
+  @OneToOne(() => StudentCover, (studentCover) => studentCover.student)
+  studentCover?: StudentCover;
 }
