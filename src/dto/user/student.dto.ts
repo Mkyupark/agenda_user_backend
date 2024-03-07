@@ -1,4 +1,5 @@
-import { StudentCover } from '../entities/coverImg.entity';
+import { StudentCover } from '../../entities/user/coverImg.entity';
+import { SubscriptionDTO } from '../subscription.dto';
 import { StudentCoverDTO } from './student.cover.dto';
 
 export class StudentDTO {
@@ -15,4 +16,5 @@ export class StudentDTO {
   is_login?: string; // 생각
   type?: string; // 생각
   studentCover?: StudentCoverDTO;
+  subscription?: SubscriptionDTO;
 }

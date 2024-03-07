@@ -1,6 +1,7 @@
-import { Column, CreateDateColumn, Entity, OneToOne, PrimaryColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, OneToMany, OneToOne, PrimaryColumn } from 'typeorm';
 import { StudentCover } from './coverImg.entity';
-import { UserRole } from './enum/userRole';
+import { UserRole } from '../enum/userRole';
+import { Subscription } from '../subscription.entity';
 
 @Entity({ name: 'student' })
 export class Student {
@@ -35,8 +36,8 @@ export class Student {
   })
   create_at!: Date;
 
-  @Column({ default: null })
-  is_login?: string;
+  @Column({ default: false })
+  is_login?: boolean;
 
   @Column({
     type: 'enum',
@@ -45,6 +46,12 @@ export class Student {
   })
   type!: UserRole;
 
+  // 방향 집어 넣는것, 테이블에는 방향이 없는데, join을 쉽게 해주기 위해 orm에서 정의해준 것
+  // 양방향으로 정의했는데, studentCover에서는 student를 참조 할 필요가 없는거 같다.
+  // 나중에 코드 리펙토링 할때 삭제해보기.
   @OneToOne(() => StudentCover, (studentCover) => studentCover.student)
   studentCover?: StudentCover;
+
+  @OneToMany(() => Subscription, (subscription) => subscription.student)
+  subscription?: Subscription;
 }

@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { StudentCover } from '../entities/coverImg.entity';
-import { StudentCoverController } from '../controller/user/student.cover.controller';
-import { StudentCoverRepository } from '../repository/student.cover.repository';
-import { StudentRepository } from '../repository/student.repository';
-import { Student } from '../entities/student.entity';
+import { StudentCover } from '../../entities/user/coverImg.entity';
+import { StudentCoverController } from '../../controller/user/student.cover.controller';
+import { StudentCoverRepository } from '../../repository/user/student.cover.repository';
+import { StudentRepository } from '../../repository/user/student.repository';
+import { Student } from '../../entities/user/student.entity';
 
 @Module({
   imports: [

@@ -1,5 +1,4 @@
-import { Student } from '../../entities/student.entity';
-import { StudentDTO } from '../../dto/student.dto';
+import { StudentDTO } from '../../dto/user/student.dto';
 
 import {
   Body,
@@ -13,46 +12,35 @@ import {
   Req,
   Res,
 } from '@nestjs/common';
-import { StudentRepository } from '../../repository/student.repository';
-import { auth } from '../../configs/config';
+import { StudentRepository } from '../../repository/user/student.repository';
 import { Response } from 'express';
-const {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  sendPasswordResetEmail,
-  deleteUser,
-} = require('firebase/auth');
-//  await sendEmailVerification(newUser.user);
-//create시 userCredential user 리턴
-// update
-// 초기화
-// 로그인 user
-// 로그아웃 user
+import { coverStorage } from '../../secure/storage';
+
 @Controller('students')
 export class studentController {
-  constructor(private studentRepository: StudentRepository) {}
+  private bucket;
+  constructor(private studentRepository: StudentRepository) {
+    this.bucket = coverStorage();
+  }
   // 비밀번호 찾기랑 초기화 로그인 로그아웃 회원가
   @Post() //ok
   async createStudent(@Body() studentDTO: StudentDTO, @Res() res: Response) {
     try {
-      const createdStudent = await this.studentRepository.createOrUpdateStudent(studentDTO);
+      const createdStudent = await this.studentRepository.createOrUpdate(studentDTO);
       return res.status(HttpStatus.CREATED).json(createdStudent);
     } catch (error) {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error });
     }
   }
-  @Put()
-  async updateStudent(@Body() studentDTO: StudentDTO) {
-    try {
-    } catch (error) {
-      return error;
-    }
-  }
-  @Delete(':id')
+  @Delete()
   async DeleteStudent(@Param('id') id: string, @Res() res: Response) {
     try {
-      const student = await this.studentRepository.deleteStudentById(id);
+      const student = await this.studentRepository.findById(id);
+      const fileName = student?.studentCover?.file_name;
+      if (fileName) {
+        await this.bucket.file(fileName!).delete();
+      }
+      await this.studentRepository.deleteById(id);
       return res.status(HttpStatus.OK).json(student);
     } catch (error) {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error });
@@ -61,7 +49,7 @@ export class studentController {
   @Get()
   async findOneStudent(@Param('id') id: string, @Res() res: Response) {
     try {
-      const student = await this.studentRepository.findStudentById(id);
+      const student = await this.studentRepository.findById(id);
       if (!student) {
         return res.status(HttpStatus.NOT_FOUND).json({ message: 'Student Not Found' });
       }
@@ -71,19 +59,18 @@ export class studentController {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error });
     }
   }
-
-  @Get('login') //ok
-  async Login(@Param('id') id: string, @Res() res: Response) {
-    try {
-      const student = await this.studentRepository.findStudentById(id);
-      if (!student) {
-        return res.status(HttpStatus.NOT_FOUND).json({ message: 'Student Not Found' });
-      }
-      return res.status(HttpStatus.OK).json(student);
-    } catch (error) {
-      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error });
-    }
-  }
+  // @Get('login') //ok
+  // async Login(@Param('id') id: string, @Res() res: Response) {
+  //   try {
+  //     const student = await this.studentRepository.findById(id);
+  //     if (!student) {
+  //       return res.status(HttpStatus.NOT_FOUND).json({ message: 'Student Not Found' });
+  //     }
+  //     return res.status(HttpStatus.OK).json(student);
+  //   } catch (error) {
+  //     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error });
+  //   }
+  // }
   // @Post('logout')
   // async LogOut() {
   //   try {

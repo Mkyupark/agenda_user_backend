@@ -2,8 +2,14 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeORMConfig } from './configs/typeorm.configs';
-import { studentModule } from './modules/student.module';
-import { studentCoverModule } from './modules/student.cover.module';
+import { studentModule } from './modules/user/student.module';
+import { studentCoverModule } from './modules/user/student.cover.module';
+import { instititutionCoverModule } from './modules/user/institution.cover.module';
+import { institutionModule } from './modules/user/institution.module';
+import { teacherModule } from './modules/user/teacher.module';
+import { teachercoverModule } from './modules/user/teacher.cover.module';
+import { courseModule } from './modules/course/course.module';
+import { courseCoverModule } from './modules/course/course.cover.module';
 
 @Module({
   imports: [
@@ -11,6 +17,12 @@ import { studentCoverModule } from './modules/student.cover.module';
     TypeOrmModule.forRoot(typeORMConfig), // TypeORM 설정을 로드합니다.
     studentModule,
     studentCoverModule,
+    institutionModule,
+    instititutionCoverModule,
+    teacherModule,
+    teachercoverModule,
+    courseModule,
+    courseCoverModule,
   ],
 })
 export class AppModule {}
