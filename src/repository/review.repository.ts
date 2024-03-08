@@ -1,25 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { SubscriptionDTO } from '../dto/subscription.dto';
-import { Subscription } from '../entities/subscription.entity';
+import { ReviewDTO } from 'src/dto/review.dto';
+import { Review } from 'src/entities/review.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
-export class SubscriptionRepository {
+export class ReviewRepository {
   constructor(
-    @InjectRepository(Subscription)
-    private readonly repository: Repository<SubscriptionDTO>
+    @InjectRepository(Review)
+    private readonly repository: Repository<ReviewDTO>
   ) {}
 
-  async createOrUpdate(subscriptionDTO: SubscriptionDTO) {
-    return await this.repository.save(subscriptionDTO);
+  async createOrUpdate(reviewDTO: ReviewDTO) {
+    return await this.repository.save(reviewDTO);
   }
   async findById(id: string) {
     return await this.repository.findOne({
       where: {
         id: id,
       },
-      relations: ['student', 'course'],
     });
   }
   async findCartByStudent(student: any) {

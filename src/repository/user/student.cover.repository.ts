@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { StudentCoverDTO } from '../../dto/user/student.cover.dto';
 import { StudentCover } from '../../entities/user/coverImg.entity';
 import { Repository } from 'typeorm';
-import { StudentDTO } from '../../dto/user/student.dto';
 
 @Injectable()
 export class StudentCoverRepository {

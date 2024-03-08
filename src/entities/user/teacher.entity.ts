@@ -58,7 +58,4 @@ export class Teacher {
     name: 'institution_id',
   })
   institution!: Institution;
-
-  @OneToMany(() => Course, (course) => course.teacher)
-  course?: Course;
 }

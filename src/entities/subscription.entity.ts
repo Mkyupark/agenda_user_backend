@@ -15,11 +15,14 @@ export class Subscription {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column({ type: 'decimal', precision: 5, scale: 2 })
-  percent: number;
+  @Column({ type: 'decimal', precision: 5, scale: 2, default: 0 })
+  percent?: number;
 
   @Column({ type: 'boolean', default: false })
-  is_review: boolean;
+  is_review?: boolean;
+
+  @Column({ type: 'boolean', default: false })
+  is_purchase?: boolean;
 
   @CreateDateColumn({
     type: 'timestamp',
@@ -34,7 +37,10 @@ export class Subscription {
 
   // 관계설정
   // 학생
-  @ManyToOne(() => Student, (student) => student.subscription)
+  @ManyToOne(() => Student, (student) => student.subscription, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({
     name: 'student_id',
   })

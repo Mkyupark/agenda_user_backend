@@ -7,6 +7,9 @@ export class SubscriptionDTO {
   is_review?: boolean;
   start_at?: Date;
   end_at?: Date;
+  student_id?: string;
+  course_id?: string;
+  is_purchase?: boolean;
   student?: StudentDTO;
   course?: CourseDTO;
 }

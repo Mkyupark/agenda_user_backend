@@ -9,6 +9,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Req,
   Res,
 } from '@nestjs/common';
@@ -33,7 +34,7 @@ export class studentController {
     }
   }
   @Delete()
-  async DeleteStudent(@Param('id') id: string, @Res() res: Response) {
+  async DeleteStudent(@Query('id') id: string, @Res() res: Response) {
     try {
       const student = await this.studentRepository.findById(id);
       const fileName = student?.studentCover?.file_name;
@@ -47,7 +48,7 @@ export class studentController {
     }
   }
   @Get()
-  async findOneStudent(@Param('id') id: string, @Res() res: Response) {
+  async findOneStudent(@Query('id') id: string, @Res() res: Response) {
     try {
       const student = await this.studentRepository.findById(id);
       if (!student) {
@@ -59,6 +60,10 @@ export class studentController {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error });
     }
   }
+  // @Get('subscriptions')
+  // async findAllSubscriptions(@Query('id') id: string, @Res()){
+
+  // }
   // @Get('login') //ok
   // async Login(@Param('id') id: string, @Res() res: Response) {
   //   try {

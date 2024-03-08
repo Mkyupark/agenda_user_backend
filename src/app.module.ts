@@ -10,6 +10,7 @@ import { teacherModule } from './modules/user/teacher.module';
 import { teachercoverModule } from './modules/user/teacher.cover.module';
 import { courseModule } from './modules/course/course.module';
 import { courseCoverModule } from './modules/course/course.cover.module';
+import { subscriptionModule } from './modules/subscription.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { courseCoverModule } from './modules/course/course.cover.module';
     teachercoverModule,
     courseModule,
     courseCoverModule,
+    subscriptionModule,
   ],
 })
 export class AppModule {}

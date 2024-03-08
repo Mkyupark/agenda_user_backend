@@ -1,4 +1,6 @@
+import { Teacher } from '../../entities/user/teacher.entity';
 import { CourseCoverDTO } from './course.cover.dto';
+import { Institution } from '../../entities/user/institution.entity';
 
 export class CourseDTO {
   id?: string;
@@ -13,4 +15,6 @@ export class CourseDTO {
   language?: string;
   total_rate?: string;
   courseCover?: CourseCoverDTO;
+  institution?: Institution;
+  teacher?: Teacher;
 }
