@@ -62,5 +62,5 @@ export class Course {
   institution!: Institution;
   // 구독정보
   @OneToMany(() => Subscription, (subscription) => subscription.course)
-  subscription?: Subscription;
+  subscription?: Subscription[];
 }

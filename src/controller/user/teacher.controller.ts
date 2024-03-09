@@ -8,15 +8,28 @@ import { InstitutionRepository } from '../../repository/user/institution.reposit
 @Controller('teachers')
 export class TeacherController {
   private bucket;
-  constructor(private teacherRepository: TeacherRepository) {
+  constructor(
+    private teacherRepository: TeacherRepository,
+    private institutionRepository: InstitutionRepository
+  ) {
     this.bucket = coverStorage();
   }
   // 비밀번호 찾기랑 초기화 로그인 로그아웃 회원가
   @Post() //ok
   async createOrUpdateTeacher(@Body() teacherDTO: TeacherDTO, @Res() res: Response) {
     try {
-      const createTeacher = await this.teacherRepository.createOrUpdate(teacherDTO);
-      return res.status(HttpStatus.CREATED).json(createTeacher);
+      if (teacherDTO.institution_id) {
+        const institution = await this.institutionRepository.findById(teacherDTO.institution_id);
+        teacherDTO = {
+          ...teacherDTO,
+          institution: institution!,
+        };
+
+        await this.teacherRepository.createOrUpdate(teacherDTO);
+        return res.status(HttpStatus.CREATED).json({ message: '강사 생성' });
+      }
+      await this.teacherRepository.createOrUpdate(teacherDTO);
+      return res.status(HttpStatus.CREATED).json({ message: '강사 수정' });
     } catch (error) {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error });
     }

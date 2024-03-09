@@ -1,5 +1,4 @@
 import { TeacherCover } from '../../entities/user/coverImg.entity';
-import { Institution } from '../../entities/user/institution.entity';
 
 export class TeacherDTO {
   id!: string;
@@ -11,6 +10,7 @@ export class TeacherDTO {
   create_at!: Date;
   is_login?: boolean;
   type!: string;
+  institution_id?: string;
   teacherCover?: TeacherCover;
-  institution!: Institution;
+  institution!: any;
 }

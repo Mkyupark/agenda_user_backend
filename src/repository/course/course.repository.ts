@@ -22,7 +22,12 @@ export class CourseRepository {
       relations: ['courseCover'],
     });
   }
-  async deleteById(id: string) {
-    return await this.repository.delete(id);
+  async deleteById(id: string, institution_id: string) {
+    return await this.repository.delete({
+      id: id,
+      institution: {
+        id: institution_id,
+      },
+    });
   }
 }
