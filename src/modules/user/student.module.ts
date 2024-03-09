@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { studentController } from '../controller/user/student.controller';
+import { studentController } from '../../controller/user/student.controller';
 import { ConfigModule } from '@nestjs/config';
-import { Student } from '../entities/student.entity';
-import { StudentRepository } from '../repository/student.repository';
+import { Student } from '../../entities/user/student.entity';
+import { StudentRepository } from '../../repository/user/student.repository';
 
 @Module({
   imports: [ConfigModule.forRoot(), TypeOrmModule.forFeature([Student])],

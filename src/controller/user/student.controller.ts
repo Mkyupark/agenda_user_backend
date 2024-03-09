@@ -1,83 +1,92 @@
-import { Student } from '../../entities/student.entity';
-import { StudentDTO } from '../../dto/student.dto';
+import { StudentDTO } from '../../dto/user/student.dto';
 
-import { Body, Controller, Delete, HttpStatus, Post, Put, Req, Res } from '@nestjs/common';
-import { StudentRepository } from '../../repository/student.repository';
-import { auth } from '../../configs/config';
-const {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  sendPasswordResetEmail,
-  deleteUser,
-} = require('firebase/auth');
-//  await sendEmailVerification(newUser.user);
-//create시 userCredential user 리턴
-// update
-// 초기화
-// 로그인 user
-// 로그아웃 user
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpStatus,
+  Param,
+  Post,
+  Put,
+  Query,
+  Req,
+  Res,
+} from '@nestjs/common';
+import { StudentRepository } from '../../repository/user/student.repository';
+import { Response } from 'express';
+import { coverStorage } from '../../secure/storage';
+
 @Controller('students')
 export class studentController {
-  constructor(private studentRepository: StudentRepository) {}
+  private bucket;
+  constructor(private studentRepository: StudentRepository) {
+    this.bucket = coverStorage();
+  }
   // 비밀번호 찾기랑 초기화 로그인 로그아웃 회원가
   @Post() //ok
-  async createStudent(@Body() studentDTO: StudentDTO) {
+  async createStudent(@Body() studentDTO: StudentDTO, @Res() res: Response) {
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        studentDTO.email,
-        studentDTO.password
-      );
-      // fb 키 저장
-      studentDTO.id = userCredential.user.uid;
-      await this.studentRepository.createStudent(studentDTO);
-      console.log(userCredential.user);
-      return userCredential.user;
+      const createdStudent = await this.studentRepository.createOrUpdate(studentDTO);
+      return res.status(HttpStatus.CREATED).json(createdStudent);
     } catch (error) {
-      return error;
-    }
-  }
-  @Post('login') //ok
-  async Login(@Body() studentDTO: StudentDTO) {
-    try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        studentDTO.email,
-        studentDTO.password
-      );
-      const temp = await this.studentRepository.findStudentById(userCredential.user.uid);
-      console.log(temp);
-      return userCredential.user;
-    } catch (error) {
-      return error;
-    }
-  }
-  @Post('logout')
-  async LogOut() {
-    try {
-      const userCredential = await auth.currentUser;
-      if (userCredential == null) {
-        return '로그인 상태가 아님';
-      }
-      await signOut(auth);
-      return '로그아웃 완료';
-    } catch (error) {
-      return error;
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error });
     }
   }
   @Delete()
-  async DeleteStudent() {
+  async DeleteStudent(@Query('id') id: string, @Res() res: Response) {
     try {
-      const user = auth.currentUser;
-      if (!user) {
-        return '로그인 상태 아님';
+      const student = await this.studentRepository.findById(id);
+      const fileName = student?.studentCover?.file_name;
+      if (fileName) {
+        await this.bucket.file(fileName!).delete();
       }
-      await deleteUser(user);
-      await this.studentRepository.deleteStudentById(user.uid);
-      return '회원 탈퇴 완료';
+      await this.studentRepository.deleteById(id);
+      return res.status(HttpStatus.OK).json(student);
     } catch (error) {
-      return error;
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error });
     }
   }
+  @Get()
+  async findOneStudent(@Query('id') id: string, @Res() res: Response) {
+    try {
+      const student = await this.studentRepository.findById(id);
+      if (!student) {
+        return res.status(HttpStatus.NOT_FOUND).json({ message: 'Student Not Found' });
+      }
+      console.log(student);
+      return res.status(HttpStatus.OK).json(student);
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error });
+    }
+  }
+  // @Get('subscriptions')
+  // async findAllSubscriptions(@Query('id') id: string, @Res()){
+
+  // }
+  // @Get('login') //ok
+  // async Login(@Param('id') id: string, @Res() res: Response) {
+  //   try {
+  //     const student = await this.studentRepository.findById(id);
+  //     if (!student) {
+  //       return res.status(HttpStatus.NOT_FOUND).json({ message: 'Student Not Found' });
+  //     }
+  //     return res.status(HttpStatus.OK).json(student);
+  //   } catch (error) {
+  //     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error });
+  //   }
+  // }
+  // @Post('logout')
+  // async LogOut() {
+  //   try {
+  //     const userCredential = await auth.currentUser;
+  //     if (userCredential == null) {
+  //       return '로그인 상태가 아님';
+  //     }
+  //     await signOut(auth);
+  //     return '로그아웃 완료';
+  //   } catch (error) {
+  //     return error;
+  //   }
+  // }
 }

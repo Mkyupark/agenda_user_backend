@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { StudentDTO } from 'src/dto/student.dto';
-import { Student } from '../entities/student.entity';
+import { StudentDTO } from 'src/dto/user/student.dto';
+import { Student } from '../../entities/user/student.entity';
 import { Repository } from 'typeorm'; // Repository를 'typeorm'에서 가져옵니다.
 import { InjectRepository } from '@nestjs/typeorm'; // InjectRepository를 사용합니다.
 
@@ -11,18 +11,18 @@ export class StudentRepository {
     private readonly repository: Repository<StudentDTO> // Repository<Student> 타입으로 주입합니다.
   ) {}
 
-  async createStudent(studentDTO: StudentDTO) {
+  async createOrUpdate(studentDTO: StudentDTO) {
     return await this.repository.save(studentDTO);
   }
-  async findStudentById(id: string) {
+  async findById(id: string) {
     return await this.repository.findOne({
       where: {
         id: id,
       },
-      relations: ['img_id'],
+      relations: ['studentCover'],
     });
   }
-  async deleteStudentById(id: string) {
+  async deleteById(id: string) {
     return await this.repository.delete(id);
   }
 }
