@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 import { Teacher } from '../user/teacher.entity';
 import { Institution } from '../user/institution.entity';
-import { CourseCover } from '../user/coverImg.entity';
+import { CourseCover, FileData } from '../user/coverImg.entity';
 import { Subscription } from '../subscription.entity';
 
 @Entity({ name: 'course' })
@@ -63,4 +63,7 @@ export class Course {
   // 구독정보
   @OneToMany(() => Subscription, (subscription) => subscription.course)
   subscription?: Subscription;
+
+  @ManyToOne(() => FileData, (fileData) => fileData.course)
+  fileData?: FileData;
 }

@@ -1,4 +1,4 @@
-import { Entity, JoinColumn, OneToOne } from 'typeorm';
+import { Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 import { ImgCover } from '../interface/img.abstract';
 import { Student } from './student.entity';
 import { Institution } from './institution.entity';
@@ -44,6 +44,18 @@ export class TeacherCover extends ImgCover {
 @Entity({ name: 'course_cover' })
 export class CourseCover extends ImgCover {
   @OneToOne(() => Course, (course) => course.courseCover, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({
+    name: 'course_id',
+  })
+  course!: Course;
+}
+
+@Entity({ name: 'file_data' })
+export class FileData extends ImgCover {
+  @ManyToOne(() => Course, (course) => course.fileData, {
     cascade: true,
     onDelete: 'CASCADE',
   })
