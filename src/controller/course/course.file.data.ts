@@ -4,16 +4,16 @@ import {
   Delete,
   Get,
   HttpStatus,
+  Param,
   Post,
-  Query,
   Res,
   UploadedFile,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { FileDataDTO } from '../../dto/course/file.data.dto';
-import { CourseFileDataRepository } from '../../repository/course/course.file.data.repository';
 import { CourseRepository } from '../../repository/course/course.repository';
 import { fileStorage } from '../../secure/storage';
+import { CourseFileDataRepository } from '../../repository/course/course.file.data.repository';
 
 @Controller('courses/files')
 export class CourseFileDataController {
@@ -54,12 +54,10 @@ export class CourseFileDataController {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
   }
-  // courseId로 삭제
   @Get()
-  async getAllByCourseId(@Query('course_id') id: string, @Res() res: Response) {
+  async getAllByCourseId(@Param('course_id') id: string, @Res() res: Response) {
     try {
       const fileList = await this.courseFileDataRepository.getAllByCourseId(id);
-
       return res.status(HttpStatus.OK).json(fileList);
     } catch (error) {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(error);
@@ -67,7 +65,7 @@ export class CourseFileDataController {
   }
   // 파일 이름으로 아이디로 삭제
   @Delete()
-  async DeleteOneFileData(@Query('file_name') id: string, @Res() res: Response) {
+  async DeleteOneFileData(@Param('file_name') id: string, @Res() res: Response) {
     try {
       const deleteFile = await this.courseFileDataRepository.deleteById(id);
       return res.status(HttpStatus.OK).json({ message: '삭제 OK' });

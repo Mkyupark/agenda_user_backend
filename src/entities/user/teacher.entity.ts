@@ -58,7 +58,4 @@ export class Teacher {
     name: 'institution_id',
   })
   institution!: Institution;
-
-  @OneToMany(() => NoticeBoard, (noticeBoard) => noticeBoard.teacher)
-  noticeBoard?: NoticeBoard;
 }
