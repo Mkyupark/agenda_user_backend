@@ -1,4 +1,15 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Query, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpStatus,
+  Param,
+  Post,
+  Put,
+  Query,
+  Res,
+} from '@nestjs/common';
 import { Response } from 'express';
 import { SubscriptionDTO } from '../dto/subscription.dto';
 import { SubscriptionRepository } from '../repository/subscription.repository';
@@ -13,14 +24,19 @@ export class SubscriptionController {
     private courseRepository: CourseRepository
   ) {}
 
+  // 삽입 수정 둘다 되는데, 오래걸림
   @Post()
-  async createOrUpdateSubscription(@Body() subscriptionDTO: SubscriptionDTO, @Res() res: Response) {
+  async createSubscription(@Body() subscriptionDTO: SubscriptionDTO, @Res() res: Response) {
     try {
       const student = await this.studentRepository.findById(subscriptionDTO.student_id!);
       const course = await this.courseRepository.findById(subscriptionDTO.course_id!);
-      console.log(student);
-      console.log(course);
+      if (!student || !course) {
+        return res
+          .status(HttpStatus.FORBIDDEN)
+          .json({ message: '학생이나 강의 정보 없음. 생성 불가' });
+      }
       subscriptionDTO = {
+        ...subscriptionDTO,
         student: student!,
         course: course!,
       };
@@ -30,7 +46,28 @@ export class SubscriptionController {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error });
     }
   }
-
+  // 수정시
+  @Put()
+  async updateSubscription(@Body() subscriptionDTO: SubscriptionDTO, @Res() res: Response) {
+    try {
+      const subscription = await this.subscriptionRepository.findById(subscriptionDTO.id!);
+      if (!subscription) {
+        return res.status(HttpStatus.NOT_FOUND).json({ message: '정보 없어서 수정 불가' });
+      }
+      const result = await this.subscriptionRepository.createOrUpdate(subscriptionDTO);
+      return res.status(HttpStatus.CREATED).json(result);
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error });
+    }
+  }
+  // 강의 구매시 id 넘겨주기
+  @Put('buy')
+  async purchaseCourse(@Query('id') id: string) {
+    const temp = await this.subscriptionRepository.purchaseSubscription(id);
+    console.log(temp);
+    return;
+  }
+  // 삭제시
   @Delete()
   async DeleteSubscription(@Param('id') id: string, @Res() res: Response) {
     try {
@@ -61,12 +98,8 @@ export class SubscriptionController {
   @Get('subscriptions')
   async findSubscriptionsByStudentId(@Query('id') id: string, @Res() res: Response) {
     try {
-      const student = await this.studentRepository.findById(id);
-      if (!student) {
-        return res.status(HttpStatus.NOT_FOUND).json({ message: 'Student not found' });
-      }
-
       const subscriptions = await this.subscriptionRepository.findSubscriptionsByStudent(id);
+      console.log(subscriptions);
       if (subscriptions.length === 0) {
         return res
           .status(HttpStatus.OK)
@@ -82,14 +115,14 @@ export class SubscriptionController {
   @Get('carts')
   async findCartbyStudents(@Query('id') id: string, @Res() res: Response) {
     try {
-      const student = await this.studentRepository.findById(id);
-      if (student === null) {
-        return res.status(HttpStatus.OK).json({ message: '학생 정보 없음' });
-      }
-      const temp = await this.subscriptionRepository.findCartByStudent(student);
+      const temp = await this.subscriptionRepository.findCartByStudent(id);
       return res.status(HttpStatus.OK).json(temp);
     } catch (error) {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error });
     }
+  }
+  @Get('students')
+  async findStudentbySubscription(@Query('institution_id') id: string) {
+    return await this.subscriptionRepository.findStudentByInstitutionId(id);
   }
 }

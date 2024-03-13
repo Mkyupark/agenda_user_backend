@@ -15,6 +15,6 @@ export class CourseDTO {
   language?: string;
   total_rate?: string;
   courseCover?: CourseCoverDTO;
-  institution?: Institution;
-  teacher?: Teacher;
+  institution_id?: string;
+  institution?: any;
 }
