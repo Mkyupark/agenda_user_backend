@@ -7,9 +7,9 @@ import { Review } from '../entities/review.entity';
 import { Subscription } from '../entities/subscription.entity';
 import { Student } from '../entities/user/student.entity';
 import { CourseRepository } from '../repository/course/course.repository';
-import { ReviewRepository } from '../repository/review/review.repository';
 import { SubscriptionRepository } from '../repository/subscription.repository';
 import { StudentRepository } from '../repository/user/student.repository';
+import { ReviewRepository } from '../repository/review.repository';
 
 @Module({
   imports: [

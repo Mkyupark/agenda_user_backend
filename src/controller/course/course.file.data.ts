@@ -10,10 +10,10 @@ import {
   UploadedFile,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { FileDataDTO } from 'src/dto/course/file.data.dto';
-import { CourseFileDataRepository } from 'src/repository/course/course.file.data.repository';
-import { CourseRepository } from 'src/repository/course/course.repository';
-import { fileStorage } from 'src/secure/storage';
+import { FileDataDTO } from '../../dto/course/file.data.dto';
+import { CourseFileDataRepository } from '../../repository/course/course.file.data.repository';
+import { CourseRepository } from '../../repository/course/course.repository';
+import { fileStorage } from '../../secure/storage';
 
 @Controller('courses/files')
 export class CourseFileDataController {
@@ -59,6 +59,7 @@ export class CourseFileDataController {
   async getAllByCourseId(@Query('course_id') id: string, @Res() res: Response) {
     try {
       const fileList = await this.courseFileDataRepository.getAllByCourseId(id);
+
       return res.status(HttpStatus.OK).json(fileList);
     } catch (error) {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(error);

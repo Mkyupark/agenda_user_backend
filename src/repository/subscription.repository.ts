@@ -31,6 +31,11 @@ export class SubscriptionRepository {
       relations: ['course'],
     });
   }
+  async purchaseSubscription(id: string) {
+    const subscirption = await this.repository.find({ where: { id: id } });
+    const temp = { ...subscirption, is_purchase: true };
+    return await this.repository.save(temp);
+  }
   async findSubscriptionsByStudent(student: any) {
     return await this.repository.find({
       where: {
@@ -42,5 +47,14 @@ export class SubscriptionRepository {
   }
   async deleteById(id: string) {
     return await this.repository.delete(id);
+  }
+
+  async findStudentByInstitutionId(id: string) {
+    const students = await this.repository
+      .createQueryBuilder('subscription')
+      .leftJoinAndSelect('subscription.student', 'student')
+      .where('subscription.institution.id = :id', { id })
+      .getRawMany();
+    return students;
   }
 }

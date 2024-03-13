@@ -3,6 +3,7 @@ import { InstitutionCover } from './coverImg.entity';
 import { UserRole } from '../enum/userRole';
 import { Teacher } from './teacher.entity';
 import { Course } from '../course/course.entity';
+import { NoticeBoard } from '../board/notice.board.entity';
 
 @Entity({ name: 'institution' })
 export class Institution {
@@ -33,4 +34,7 @@ export class Institution {
 
   @OneToMany(() => Course, (course) => course.institution)
   course?: Course;
+
+  @OneToMany(() => NoticeBoard, (noticeBoard) => noticeBoard.institution)
+  noticeBoard?: NoticeBoard;
 }
