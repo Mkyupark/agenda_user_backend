@@ -47,10 +47,4 @@ export class NoticeBoard {
     name: 'institution_id',
   })
   institution!: Institution;
-
-  @ManyToOne(() => Teacher, (teacher) => teacher.noticeBoard)
-  @JoinColumn({
-    name: 'teacher_id',
-  })
-  teacher?: Teacher;
 }

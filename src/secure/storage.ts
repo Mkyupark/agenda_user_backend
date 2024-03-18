@@ -10,11 +10,21 @@ import { Storage } from '@google-cloud/storage';
 const projectId: string = 'gs-teaching';
 const keyFilename: string = __dirname + '/mykey.json';
 const bucketName: string = 'gs_teaching_storage';
+const fileBucketName: string = 'gs_teaching_filestorage';
+
 export const coverStorage = () => {
   const storage = new Storage({
     projectId,
     keyFilename,
   });
   const bucket = storage.bucket(bucketName);
+  return bucket;
+};
+export const fileStorage = () => {
+  const storage = new Storage({
+    projectId,
+    keyFilename,
+  });
+  const bucket = storage.bucket(fileBucketName);
   return bucket;
 };

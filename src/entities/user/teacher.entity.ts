@@ -11,7 +11,7 @@ import {
 import { TeacherCover } from './coverImg.entity';
 import { UserRole } from '../enum/userRole';
 import { Institution } from './institution.entity';
-import { Course } from '../course/course.entity';
+import { NoticeBoard } from '../board/notice.board.entity';
 
 @Entity({ name: 'teacher' })
 export class Teacher {

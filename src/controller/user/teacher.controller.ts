@@ -3,7 +3,6 @@ import { Response } from 'express';
 import { coverStorage } from '../../secure/storage';
 import { TeacherRepository } from '../../repository/user/teacher.repository';
 import { TeacherDTO } from '../../dto/user/teacher.dto';
-import { InstitutionRepository } from '../../repository/user/institution.repository';
 
 @Controller('teachers')
 export class TeacherController {
