@@ -1,4 +1,5 @@
 import { CourseDTO } from './course/course.dto';
+import { InstitutionDTO } from './user/institution.dto';
 import { StudentDTO } from './user/student.dto';
 
 export class SubscriptionDTO {
@@ -12,4 +13,5 @@ export class SubscriptionDTO {
   is_purchase?: boolean;
   student?: StudentDTO;
   course?: CourseDTO;
+  institution?: InstitutionDTO;
 }

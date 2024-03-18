@@ -60,6 +60,19 @@ export class studentController {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error });
     }
   }
+  @Post('subscriptions')
+  async findStudentBySubscriptionId(
+    @Body() id: string,
+    institution_id: string,
+    @Res() res: Response
+  ) {
+    try {
+      console.log(id, institution_id);
+      return;
+    } catch (error) {
+      return;
+    }
+  }
   // @Get('subscriptions')
   // async findAllSubscriptions(@Query('id') id: string, @Res()){
 

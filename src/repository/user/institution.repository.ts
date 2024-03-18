@@ -22,6 +22,9 @@ export class InstitutionRepository {
       relations: ['institutionCover'],
     });
   }
+  async insertByCourse(id: string) {
+    return await this.repository.findOne({ where: { id: id } });
+  }
   async deleteById(id: string) {
     return await this.repository.delete(id);
   }
